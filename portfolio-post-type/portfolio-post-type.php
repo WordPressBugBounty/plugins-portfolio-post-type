@@ -12,10 +12,13 @@
  * Plugin Name: Portfolio Post Type
  * Plugin URI:  https://wptheming.com/portfolio-post-type/
  * Description: Enables a portfolio post type and taxonomies.
- * Version:     1.0.1
+ * Version:     1.1.2
+ * Requires at least: 5.1
+ * Requires PHP: 7.0
+ * Tested up to: 7.1
  * Author:      Devin Price
  * Author URI:  https://www.wptheming.com/
- * Text Domain: portfolioposttype
+ * Text Domain: portfolio-post-type
  * License:     GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path: /languages
@@ -36,8 +39,11 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-portfolio-post-type-taxono
 require plugin_dir_path( __FILE__ ) . 'includes/class-portfolio-post-type-taxonomy-tag.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-portfolio-post-type-registrations.php';
 
+// Declared global so they're reachable when this file is included from inside a function (e.g. WP-CLI, tests).
+global $portfolio_post_type, $portfolio_post_type_registrations;
+
 // Instantiate registration class, so we can add it as a dependency to main plugin class.
-$portfolio_post_type_registrations = new Portfolio_Post_Type_Registrations;
+$portfolio_post_type_registrations = new Portfolio_Post_Type_Registrations();
 
 // Instantiate main plugin file, so activation callback does not need to be static.
 $portfolio_post_type = new Portfolio_Post_Type( $portfolio_post_type_registrations );
@@ -60,7 +66,7 @@ add_action( 'init', 'portfolio_post_type_init', 100 );
 function portfolio_post_type_init() {
 	if ( is_admin() ) {
 		global $portfolio_post_type_admin, $portfolio_post_type_registrations;
-		// Loads for users viewing the WordPress dashboard
+		// Loads for users viewing the WordPress dashboard.
 		if ( ! class_exists( 'Gamajo_Dashboard_Glancer' ) ) {
 			require plugin_dir_path( __FILE__ ) . 'includes/class-gamajo-dashboard-glancer.php';  // WP 3.8
 		}
@@ -68,12 +74,12 @@ function portfolio_post_type_init() {
 		$portfolio_post_type_admin = new Portfolio_Post_Type_Admin( $portfolio_post_type_registrations );
 		$portfolio_post_type_admin->init();
 	} else {
-		// Loads for users viewing the front end
+		// Loads for users viewing the front end.
 		if ( apply_filters( 'portfolioposttype_add_taxonomy_terms_classes', true ) ) {
 			if ( ! class_exists( 'Gamajo_Single_Entry_Term_Body_Classes' ) ) {
 				require plugin_dir_path( __FILE__ ) . 'includes/class-gamajo-single-entry-term-body-classes.php';
 			}
-			$portfolio_post_type_body_classes = new Gamajo_Single_Entry_Term_Body_Classes;
+			$portfolio_post_type_body_classes = new Gamajo_Single_Entry_Term_Body_Classes();
 			$portfolio_post_type_body_classes->init( 'portfolio' );
 		}
 	}

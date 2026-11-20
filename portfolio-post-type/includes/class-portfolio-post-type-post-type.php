@@ -73,9 +73,12 @@ class Portfolio_Post_Type_Post_Type extends Gamajo_Post_Type {
 			'capability_type' => 'post',
 			'rewrite'         => array( 'slug' => 'portfolio', ), // Permalinks format
 			'menu_position'   => 5,
-			'menu_icon'       => ( version_compare( $GLOBALS['wp_version'], '3.8', '>=' ) ) ? 'dashicons-portfolio' : false ,
+			'menu_icon'       => 'dashicons-portfolio',
 			'has_archive'     => true,
 			'show_in_rest'    => true,
+			'show_in_graphql' => true,
+			'graphql_single_name' => 'portfolio_item',
+			'graphql_plural_name' => 'portfolio_items',
 		);
 
 		return apply_filters( 'portfolioposttype_args', $args );
